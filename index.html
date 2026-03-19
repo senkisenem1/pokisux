@@ -3,143 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Strategy Tool v3</title>
+    <title>Range Master Pro</title>
     <style>
-        :root { --primary: #1e293b; --accent: #3b82f6; --bg: #f8fafc; --success: #22c55e; }
-        body { font-family: -apple-system, sans-serif; padding: 5px; background: var(--bg); margin: 0; overflow-x: hidden; }
-        #password-overlay { position: fixed; inset: 0; background: var(--primary); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; color: white; }
-        .pw-box { padding: 15px; font-size: 18px; border-radius: 10px; border: none; margin-bottom: 15px; width: 240px; text-align: center; }
-        .pw-btn { padding: 12px 30px; background: var(--success); color: white; border: none; border-radius: 10px; font-weight: bold; }
-        #main-content { display: none; width: 100%; }
-        .main-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; }
-        .stack-column { background: #fff; padding: 8px 4px; border-radius: 8px; min-height: 98vh; border: 1px solid #e2e8f0; }
-        h1 { font-size: 1rem; color: #fff; background: var(--primary); padding: 10px 0; border-radius: 6px; text-align: center; margin: 0 0 10px 0; }
-        h2 { font-size: 0.7rem; color: #94a3b8; margin: 12px 0 4px 0; text-transform: uppercase; text-align: center; border-bottom: 1px solid #f1f5f9; }
+        :root { --primary: #0f172a; --accent: #2563eb; --bg: #020617; --text: #f8fafc; --btn-bg: #1e293b; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 5px; overflow: hidden; }
+        
+        /* Grid Layout */
+        .main-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100vw; height: 100vh; box-sizing: border-box; }
+        .stack-column { background: #111827; border-radius: 12px; padding: 10px 5px; display: flex; flex-direction: column; border: 1px solid #374151; }
+        
+        /* Headers */
+        h1 { font-size: 1.2rem; text-align: center; margin: 0 0 10px 0; background: var(--accent); padding: 8px; border-radius: 8px; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        h2 { font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin: 15px 0 5px 0; text-align: center; border-bottom: 1px solid #334155; }
+        
+        /* Buttons */
         .group { display: flex; flex-direction: column; gap: 4px; }
-        button { padding: 12px 2px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 11px; font-weight: 700; color: var(--primary); cursor: pointer; }
-        button.active-btn { background: var(--accent); color: white; border-color: var(--accent); }
-        img { display: none; max-width: 100%; height: auto; border: 2px solid var(--accent); border-radius: 4px; margin: 5px 0; }
+        button { 
+            padding: 14px 4px; 
+            background: var(--btn-bg); 
+            border: 1px solid #334155; 
+            border-radius: 6px; 
+            color: #cbd5e1; 
+            font-size: 11px; 
+            font-weight: 700; 
+            cursor: pointer;
+            transition: all 0.1s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        button.active { background: var(--accent); color: white; border-color: #60a5fa; box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
+        
+        /* Images */
+        .img-container { min-height: 0; flex-grow: 0; }
+        img { display: none; width: 100%; border-radius: 4px; margin-top: 8px; border: 2px solid var(--accent); }
+        
+        /* Password Overlay */
+        #pw-overlay { position: fixed; inset: 0; background: var(--primary); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; }
+        .pw-input { padding: 15px; border-radius: 8px; border: none; margin-bottom: 15px; width: 200px; font-size: 18px; text-align: center; }
     </style>
 </head>
 <body>
-    <div id="password-overlay">
-        <input type="password" id="pw-input" class="pw-box" placeholder="Password">
-        <button onclick="check()" class="pw-btn">Unlock</button>
+
+    <div id="pw-overlay">
+        <input type="password" id="pw" class="pw-input" placeholder="ENTER CODE">
+        <button onclick="unlock()" style="padding: 15px 40px; background: #059669; color: white; font-size: 16px;">UNLOCK</button>
     </div>
 
-    <div id="main-content">
-        <div class="main-grid">
-            <div class="stack-column">
-                <h1>15BB</h1>
-                <h2>BTN</h2>
-                <div class="group">
-                    <button onclick="t('15br',this)">BTN RFI</button><img id="15br" src="15BB/BTN/btn_rfi.png">
-                    <button onclick="t('15bb',this)">VS BB AI</button><img id="15bb" src="15BB/BTN/btn_vs_bb_allin.png">
-                    <button onclick="t('15bs',this)">VS SB AI</button><img id="15bs" src="15BB/BTN/btn_vs_sb_allin.png">
-                </div>
-                <h2>SB</h2>
-                <div class="group">
-                    <button onclick="t('15sr',this)">SB RFI</button><img id="15sr" src="15BB/SB/sb_rfi.png">
-                    <button onclick="t('15svb2',this)">VS BU 2X</button><img id="15svb2" src="15BB/SB/sb_vs_bu_2x.png">
-                    <button onclick="t('15svba',this)">VS BU AI</button><img id="15svba" src="15BB/SB/sb_vs_bu_allin.png">
-                    <button onclick="t('15s25',this)">2.5X VS BB AI</button><img id="15s25" src="15BB/SB/sb_2.5x_vs_bb_allin.png">
-                    <button onclick="t('15sl3',this)">LIMP VS BB 3X</button><img id="15sl3" src="15BB/SB/sb_limp_vs_bb_3x_iso.png">
-                    <button onclick="t('15sla',this)">LIMP VS BB AI</button><img id="15sla" src="15BB/SB/sb_limp_vs_bb_allin.png">
-                </div>
-                <h2>BB</h2>
-                <div class="group">
-                    <button onclick="t('15bv2',this)">VS BTN 2X</button><img id="15bv2" src="15BB/BB/bb_vs_btn_2x.png">
-                    <button onclick="t('15bva',this)">VS BTN AI</button><img id="15bva" src="15BB/BB/bb_vs_btn_allin.png">
-                    <button onclick="t('15bsl',this)">VS SB LIMP</button><img id="15bsl" src="15BB/BB/bb_vs_sb_limp.png">
-                    <button onclick="t('15bs25',this)">VS SB 2.5X</button><img id="15bs25" src="15BB/BB/bb_vs_sb_2.5x.png">
-                    <button onclick="t('15bsa',this)">VS SB AI</button><img id="15bsa" src="15BB/BB/bb_vs_sb_allin.png">
-                </div>
+    <div class="main-grid" id="app" style="display:none;">
+        
+        <div class="stack-column">
+            <h1>15BB</h1>
+            <h2>BTN</h2>
+            <div class="group">
+                <button onclick="sh('15br',this)">RFI</button><img id="15br" src="15BB/BTN/btn_rfi.png">
+                <button onclick="sh('15bba',this)">VS BB AI</button><img id="15bba" src="15BB/BTN/btn_vs_bb_allin.png">
+                <button onclick="sh('15bsa',this)">VS SB AI</button><img id="15bsa" src="15BB/BTN/btn_vs_sb_allin.png">
             </div>
-
-            <div class="stack-column">
-                <h1>12BB</h1>
-                <h2>BTN</h2>
-                <div class="group">
-                    <button onclick="t('12br',this)">BTN RFI</button><img id="12br" src="12BB/BTN/btn_rfi.png">
-                    <button onclick="t('12bb',this)">VS BB AI</button><img id="12bb" src="12BB/BTN/btn_vs_bb_allin.png">
-                </div>
-                <h2>SB</h2>
-                <div class="group">
-                    <button onclick="t('12sr',this)">SB RFI</button><img id="12sr" src="12BB/SB/sb_rfi.png">
-                    <button onclick="t('12svb2',this)">VS BU 2X</button><img id="12svb2" src="12BB/SB/sb_vs_bu_2x.png">
-                    <button onclick="t('12svba',this)">VS BU AI</button><img id="12svba" src="12BB/SB/sb_vs_bu_allin.png">
-                    <button onclick="t('12s25',this)">2.5X VS BB AI</button><img id="12s25" src="12BB/SB/sb_2.5x_vs_bb_allin.png">
-                    <button onclick="t('12sl3',this)">LIMP VS BB 3X</button><img id="12sl3" src="12BB/SB/sb_limp_vs_bb_3x_iso.png">
-                    <button onclick="t('12sla',this)">LIMP VS BB AI</button><img id="12sla" src="12BB/SB/sb_limp_vs_bb_allin.png">
-                </div>
-                <h2>BB</h2>
-                <div class="group">
-                    <button onclick="t('12bv2',this)">VS BTN 2X</button><img id="12bv2" src="12BB/BB/bb_vs_btn_2x.png">
-                    <button onclick="t('12bva',this)">VS BTN AI</button><img id="12bva" src="12BB/BB/bb_vs_btn_allin.png">
-                    <button onclick="t('12bsl',this)">VS SB LIMP</button><img id="12bsl" src="12BB/BB/bb_vs_sb_limp.png">
-                    <button onclick="t('12bs2',this)">VS SB 2X</button><img id="12bs2" src="12BB/BB/bb_vs_sb_2x.png">
-                    <button onclick="t('12bsa',this)">VS SB AI</button><img id="12bsa" src="12BB/BB/bb_vs_sb_allin.png">
-                </div>
+            <h2>SB</h2>
+            <div class="group">
+                <button onclick="sh('15sr',this)">RFI</button><img id="15sr" src="15BB/SB/sb_rfi.png">
+                <button onclick="sh('15svb2',this)">VS BU 2X</button><img id="15svb2" src="15BB/SB/sb_vs_bu_2x.png">
+                <button onclick="sh('15svba',this)">VS BU AI</button><img id="15svba" src="15BB/SB/sb_vs_bu_allin.png">
+                <button onclick="sh('15s25',this)">2.5X VS BB AI</button><img id="15s25" src="15BB/SB/sb_2.5x_vs_bb_allin.png">
+                <button onclick="sh('15sl3',this)">LMP VS 3X</button><img id="15sl3" src="15BB/SB/sb_limp_vs_bb_3x_iso.png">
+                <button onclick="sh('15sla',this)">LMP VS AI</button><img id="15sla" src="15BB/SB/sb_limp_vs_bb_allin.png">
             </div>
-
-            <div class="stack-column">
-                <h1>10BB</h1>
-                <h2>BTN</h2>
-                <div class="group">
-                    <button onclick="t('10br',this)">BTN RFI</button><img id="10br" src="10BB/BTN/btn_rfi.png">
-                    <button onclick="t('10bb',this)">VS BB AI</button><img id="10bb" src="10BB/BTN/btn_vs_bb_allin.png">
-                </div>
-                <h2>SB</h2>
-                <div class="group">
-                    <button onclick="t('10sr',this)">SB RFI</button><img id="10sr" src="10BB/SB/sb_rfi.png">
-                    <button onclick="t('10svb2',this)">VS BU 2X</button><img id="10svb2" src="10BB/SB/sb_vs_bu_2x.png">
-                    <button onclick="t('10svba',this)">VS BU AI</button><img id="10svba" src="10BB/SB/sb_vs_bu_allin.png">
-                    <button onclick="t('10s2',this)">2X VS BB AI</button><img id="10s2" src="10BB/SB/sb_2x_vs_bb_allin.png">
-                    <button onclick="t('10sl3',this)">LIMP VS BB 3X</button><img id="10sl3" src="10BB/SB/sb_limp_vs_bb_3x_iso.png">
-                    <button onclick="t('10sla',this)">LIMP VS BB AI</button><img id="10sla" src="10BB/SB/sb_limp_vs_bb_allin.png">
-                </div>
-                <h2>BB</h2>
-                <div class="group">
-                    <button onclick="t('10bv2',this)">VS BTN 2X</button><img id="10bv2" src="10BB/BB/bb_vs_btn_2x.png">
-                    <button onclick="t('10bva',this)">VS BTN AI</button><img id="10bva" src="10BB/BB/bb_vs_btn_allin.png">
-                    <button onclick="t('10bsl',this)">VS SB LIMP</button><img id="10bsl" src="10BB/BB/bb_vs_sb_limp.png">
-                    <button onclick="t('10bs2',this)">VS SB 2X</button><img id="10bs2" src="10BB/BB/bb_vs_sb_2x.png">
-                    <button onclick="t('10bsa',this)">VS SB AI</button><img id="10bsa" src="10BB/BB/bb_vs_sb_allin.png">
-                </div>
-            </div>
-
-            <div class="stack-column">
-                <h1>8BB</h1>
-                <h2>BTN</h2>
-                <div class="group">
-                    <button onclick="t('8br',this)">BTN RFI</button><img id="8br" src="8BB/BTN/btn_rfi.png">
-                </div>
-                <h2>SB</h2>
-                <div class="group">
-                    <button onclick="t('8sr',this)">SB RFI</button><img id="8sr" src="8BB/SB/sb_rfi.png">
-                    <button onclick="t('8s2a',this)">2X VS BB AI</button><img id="8s2a" src="8BB/SB/sb_2x_vs_bb_allin.png">
-                    <button onclick="t('8sl3',this)">LIMP VS BB 3X</button><img id="8sl3" src="8BB/SB/sb_limp_vs_bb_3x.png">
-                    <button onclick="t('8sla',this)">LIMP VS BB AI</button><img id="8sla" src="8BB/SB/sb_limp_vs_bb_allin.png">
-                    <button onclick="t('8sva',this)">VS BU AI</button><img id="8sva" src="8BB/SB/sb_vs_bu_allin.png">
-                </div>
-                <h2>BB</h2>
-                <div class="group">
-                    <button onclick="t('8bva',this)">VS BTN AI</button><img id="8bva" src="8BB/BB/bb_vs_btn_allin.png">
-                    <button onclick="t('8bs2',this)">VS SB 2X</button><img id="8bs2" src="8BB/BB/bb_vs_sb_2x.png">
-                    <button onclick="t('8bsa',this)">VS SB AI</button><img id="8bsa" src="8BB/BB/bb_vs_sb_allin.png">
-                    <button onclick="t('8bsl',this)">VS SB LIMP</button><img id="8bsl" src="8BB/BB/bb_vs_sb_limp.png">
-                </div>
+            <h2>BB</h2>
+            <div class="group">
+                <button onclick="sh('15bv2',this)">VS BTN 2X</button><img id="15bv2" src="15BB/BB/bb_vs_btn_2x.png">
+                <button onclick="sh('15bva',this)">VS BTN AI</button><img id="15bva" src="15BB/BB/bb_vs_btn_allin.png">
+                <button onclick="sh('15bs25',this)">VS SB 2.5X</button><img id="15bs25" src="15BB/BB/bb_vs_sb_2.5x.png">
+                <button onclick="sh('15bsa',this)">VS SB AI</button><img id="15bsa" src="15BB/BB/bb_vs_sb_allin.png">
+                <button onclick="sh('15bsl',this)">VS SB LMP</button><img id="15bsl" src="15BB/BB/bb_vs_sb_limp.png">
             </div>
         </div>
+
+        <div class="stack-column">
+            <h1>12BB</h1>
+            <h2>BTN</h2>
+            <div class="group">
+                <button onclick="sh('12br',this)">RFI</button><img id="12br" src="12BB/BTN/btn_rfi.png">
+                <button onclick="sh('12bba',this)">VS BB AI</button><img id="12bba" src="12BB/BTN/btn_vs_bb_allin.png">
+                <button onclick="sh('12bsa',this)">VS SB AI</button><img id="12bsa" src="12BB/BTN/btn_vs_sb_allin.png">
+            </div>
+            <h2>SB</h2>
+            <div class="group">
+                <button onclick="sh('12sr',this)">RFI</button><img id="12sr" src="12BB/SB/sb_rfi.png">
+                <button onclick="sh('12svb2',this)">VS BU 2X</button><img id="12svb2" src="12BB/SB/sb_vs_bu_2x.png">
+                <button onclick="sh('12svba',this)">VS BU AI</button><img id="12svba" src="12BB/SB/sb_vs_bu_allin.png">
+                <button onclick="sh('12s25',this)">2.5X VS BB AI</button><img id="12s25" src="12BB/SB/sb_2.5x_vs_bb_allin.png">
+                <button onclick="sh('12sl3',this)">LMP VS 3X</button><img id="12sl3" src="12BB/SB/sb_limp_vs_bb_3x_iso.png">
+                <button onclick="sh('12sla',this)">LMP VS AI</button><img id="12sla" src="12BB/SB/sb_limp_vs_bb_allin.png">
+            </div>
+            <h2>BB</h2>
+            <div class="group">
+                <button onclick="sh('12bv2',this)">VS BTN 2X</button><img id="12bv2" src="12BB/BB/bb_vs_btn_2x.png">
+                <button onclick="sh('12bva',this)">VS BTN AI</button><img id="12bva" src="12BB/BB/bb_vs_btn_allin.png">
+                <button onclick="sh('12bs2',this)">VS SB 2X</button><img id="12bs2" src="12BB/BB/bb_vs_sb_2x.png">
+                <button onclick="sh('12bsa',this)">VS SB AI</button><img id="12bsa" src="12BB/BB/bb_vs_sb_allin.png">
+                <button onclick="sh('12bsl',this)">VS SB LMP</button><img id="12bsl" src="12BB/BB/bb_vs_sb_limp.png">
+            </div>
+        </div>
+
+        <div class="stack-column">
+            <h1>10BB</h1>
+            <h2>BTN</h2>
+            <div class="group">
+                <button onclick="sh('10br',this)">RFI</button><img id="10br" src="10BB/BTN/btn_rfi.png">
+                <button onclick="sh('10bba',this)">VS BB AI</button><img id="10bba" src="10BB/BTN/btn_vs_bb_allin.png">
+                <button onclick="sh('10bsa',this)">VS SB AI</button><img id="10bsa" src="10BB/BTN/btn_vs_sb_allin.png">
+            </div>
+            <h2>SB</h2>
+            <div class="group">
+                <button onclick="sh('10sr',this)">RFI</button><img id="10sr" src="10BB/SB/sb_rfi.png">
+                <button onclick="sh('10svb2',this)">VS BU 2X</button><img id="10svb2" src="10BB/SB/sb_vs_bu_2x.png">
+                <button onclick="sh('10svba',this)">VS BU AI</button><img id="10svba" src="10BB/SB/sb_vs_bu_allin.png">
+                <button onclick="sh('10s2',this)">2X VS BB AI</button><img id="10s2" src="10BB/SB/sb_2x_vs_bb_allin.png">
+                <button onclick="sh('10sl3',this)">LMP VS 3X</button><img id="10sl3" src="10BB/SB/sb_limp_vs_bb_3x_iso.png">
+                <button onclick="sh('10sla',this)">LMP VS AI</button><img id="10sla" src="10BB/SB/sb_limp_vs_bb_allin.png">
+            </div>
+            <h2>BB</h2>
+            <div class="group">
+                <button onclick="sh('10bv2',this)">VS BTN 2X</button><img id="10bv2" src="10BB/BB/bb_vs_btn_2x.png">
+                <button onclick="sh('10bva',this)">VS BTN AI</button><img id="10bva" src="10BB/BB/bb_vs_btn_allin.png">
+                <button onclick="sh('10bs2',this)">VS SB 2X</button><img id="10bs2" src="10BB/BB/bb_vs_sb_2x.png">
+                <button onclick="sh('10bsa',this)">VS SB AI</button><img id="10bsa" src="10BB/BB/bb_vs_sb_allin.png">
+                <button onclick="sh('10bsl',this)">VS SB LMP</button><img id="10bsl" src="10BB/BB/bb_vs_sb_limp.png">
+            </div>
+        </div>
+
+        <div class="stack-column">
+            <h1>8BB</h1>
+            <h2>BTN</h2>
+            <div class="group">
+                <button onclick="sh('8br',this)">RFI</button><img id="8br" src="8BB/BTN/btn_rfi.png">
+            </div>
+            <h2>SB</h2>
+            <div class="group">
+                <button onclick="sh('8sr',this)">RFI</button><img id="8sr" src="8BB/SB/sb_rfi.png">
+                <button onclick="sh('8svba',this)">VS BU AI</button><img id="8svba" src="8BB/SB/sb_vs_bu_allin.png">
+                <button onclick="sh('8s2',this)">2X VS BB AI</button><img id="8s2" src="8BB/SB/sb_2x_vs_bb_allin.png">
+                <button onclick="sh('8sl3',this)">LMP VS 3X</button><img id="8sl3" src="8BB/SB/sb_limp_vs_bb_3x_iso.png">
+                <button onclick="sh('8sla',this)">LMP VS AI</button><img id="8sla" src="8BB/SB/sb_limp_vs_bb_allin.png">
+            </div>
+            <h2>BB</h2>
+            <div class="group">
+                <button onclick="sh('8bva',this)">VS BTN AI</button><img id="8bva" src="8BB/BB/bb_vs_btn_allin.png">
+                <button onclick="sh('8bs2',this)">VS SB 2X</button><img id="8bs2" src="8BB/BB/bb_vs_sb_2x.png">
+                <button onclick="sh('8bsa',this)">VS SB AI</button><img id="8bsa" src="8BB/BB/bb_vs_sb_allin.png">
+                <button onclick="sh('8bsl',this)">VS SB LMP</button><img id="8bsl" src="8BB/BB/bb_vs_sb_limp.png">
+            </div>
+        </div>
+
     </div>
 
     <script>
-        function check(){ if(document.getElementById('pw-input').value==='spinsux'){ document.getElementById('password-overlay').style.display='none'; document.getElementById('main-content').style.display='block'; } }
-        function t(id,btn){
-            const img=document.getElementById(id); const col=img.closest('.stack-column'); const vis=img.style.display==='block';
-            col.querySelectorAll('img').forEach(i=>i.style.display='none');
-            col.querySelectorAll('button').forEach(b=>b.classList.remove('active-btn'));
-            if(!vis){ img.style.display='block'; btn.classList.add('active-btn'); }
+        // Make sure this matches exactly what you type
+        const MASTER_PASSWORD = "spinsux"; 
+
+        function unlock() {
+            const input = document.getElementById('pw');
+            const overlay = document.getElementById('pw-overlay');
+            const app = document.getElementById('app');
+
+            if (input.value.trim() === MASTER_PASSWORD) {
+                overlay.style.display = 'none';
+                app.style.display = 'grid';
+                // Force a redraw for iPad Safari
+                window.dispatchEvent(new Event('resize'));
+            } else {
+                input.style.border = "2px solid #ef4444";
+                input.value = "";
+                input.placeholder = "WRONG CODE";
+            }
+        }
+
+        // Allow pressing "Enter" on the keyboard to unlock
+        document.getElementById('pw').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                unlock();
+            }
+        });
+
+        function sh(id, btn) {
+            const col = btn.closest('.stack-column');
+            const images = col.querySelectorAll('img');
+            const buttons = col.querySelectorAll('button');
+            const target = document.getElementById(id);
+            
+            const isOpening = target.style.display !== 'block';
+
+            // Reset current column
+            images.forEach(img => img.style.display = 'none');
+            buttons.forEach(b => b.classList.remove('active'));
+
+            if (isOpening) {
+                target.style.display = 'block';
+                btn.classList.add('active');
+            }
         }
     </script>
 </body>
