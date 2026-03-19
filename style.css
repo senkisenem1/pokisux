@@ -1,0 +1,41 @@
+body {
+    font-family: sans-serif;
+    padding: 40px;
+    background-color: #f4f4f4;
+}
+
+.button-group button {
+    display: block;
+    margin: 10px 0;
+    padding: 8px 15px;
+    cursor: pointer;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.button-group button:hover {
+    background-color: #e0e0e0;
+}
+
+.hidden-chart {
+    display: none; /* Keeps them hidden by default */
+    margin-top: 20px;
+    max-width: 100%;
+    border: 2px solid #333;
+}
+
+/* Update your existing .hidden-chart class */
+.hidden-chart {
+    display: none; 
+    margin-top: 20px;
+    
+    /* Change these values to find your perfect size */
+    width: 100%;        /* Allows it to grow up to its container */
+    max-width: 500px;   /* Prevents it from becoming "too big" on desktop */
+    height: auto;       /* Maintains the aspect ratio so it doesn't look stretched */
+    
+    border: 2px solid #333;
+    border-radius: 8px; /* Optional: rounds the corners for a cleaner look */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: adds a slight lift */
+}
