@@ -5,111 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Poker Strategy Tool</title>
     <style>
-        :root {
-            --primary-dark: #2c3e50;
-            --bg-color: #eef1f4;
-            --column-bg: #ffffff;
-            --border-color: #d1d5db;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            padding: 10px;
-            background-color: var(--bg-color);
-            color: #333;
-            margin: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* Password Overlay */
-        #password-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--primary-dark);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            color: white;
-        }
-
-        .pw-box {
-            padding: 15px;
-            font-size: 18px;
-            border-radius: 8px;
-            border: none;
-            margin-bottom: 10px;
-            width: 80%;
-            max-width: 300px;
-            text-align: center;
-        }
-
-        .pw-btn {
-            padding: 12px 25px;
-            background: #27ae60;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        /* Main Content */
+        :root { --primary-dark: #2c3e50; --bg-color: #eef1f4; --column-bg: #ffffff; --border-color: #d1d5db; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 10px; background-color: var(--bg-color); margin: 0; -webkit-tap-highlight-color: transparent; }
+        #password-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-dark); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; color: white; }
+        .pw-box { padding: 15px; font-size: 18px; border-radius: 8px; border: none; margin-bottom: 10px; width: 80%; max-width: 300px; text-align: center; }
+        .pw-btn { padding: 12px 25px; background: #27ae60; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
         #main-content { display: none; }
-
-        .main-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 12px;
-            align-items: start;
-        }
-
-        @media (max-width: 1024px) { .main-grid { grid-template-columns: repeat(2, 1fr); } }
+        .main-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; align-items: start; }
+        @media (max-width: 1200px) { .main-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 768px) { .main-grid { grid-template-columns: 1fr; } }
-
-        .stack-column {
-            background: var(--column-bg);
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            min-height: 90vh;
-        }
-
-        h1 { 
-            font-size: 1.2rem; color: #fff; background: var(--primary-dark); 
-            padding: 12px; border-radius: 8px; margin: 0 0 15px 0;
-            text-align: center; position: sticky; top: 0; z-index: 10;
-        }
-
-        h2 { font-size: 0.85rem; color: #94a3b8; margin-top: 25px; text-transform: uppercase; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; }
-
-        .button-group { margin: 12px 0; display: flex; flex-direction: column; gap: 6px; }
-
-        button.chart-trigger {
-            padding: 12px 15px; background-color: #fff; border: 1px solid var(--border-color);
-            border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600;
-            text-align: left; transition: background 0.1s;
-        }
-
-        button.chart-trigger:active { background-color: #f8fafc; border-color: var(--primary-dark); }
-
-        .image-container { text-align: center; }
-
-        .hidden-chart {
-            display: none; max-width: 100%; height: auto;
-            border: 2px solid var(--primary-dark); border-radius: 6px;
-            margin-top: 10px; animation: fadeIn 0.2s ease-in-out;
-        }
-
+        .stack-column { background: var(--column-bg); padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); min-height: 90vh; }
+        h1 { font-size: 1.1rem; color: #fff; background: var(--primary-dark); padding: 12px; border-radius: 8px; text-align: center; position: sticky; top: 0; z-index: 10; margin: 0 0 15px 0; }
+        h2 { font-size: 0.8rem; color: #94a3b8; margin-top: 20px; text-transform: uppercase; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; }
+        .button-group { display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
+        button.chart-trigger { padding: 12px 10px; background: #fff; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: 600; text-align: left; }
+        button.chart-trigger:active { background: #f8fafc; border-color: var(--primary-dark); }
+        .hidden-chart { display: none; max-width: 100%; height: auto; border: 2px solid var(--primary-dark); border-radius: 6px; margin-top: 10px; animation: fadeIn 0.2s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div id="password-overlay">
-        <h2 style="color:white; border:none;">Enter Password</h2>
+        <h2>Enter Password</h2>
         <input type="password" id="pw-input" class="pw-box" placeholder="...">
         <button onclick="checkPassword()" class="pw-btn">Unlock</button>
     </div>
@@ -119,52 +37,45 @@
 
             <div class="stack-column">
                 <h1>15BB</h1>
-                
                 <h2>BTN</h2>
                 <div class="button-group">
                     <button class="chart-trigger" onclick="toggleImage('15_btn_rfi')">BTN rfi</button>
-                    <button class="chart-trigger" onclick="toggleImage('15_btn_vs_bb_allin')">BTN vs BB allin</button>
-                    <button class="chart-trigger" onclick="toggleImage('15_btn_vs_sb_allin')">BTN vs SB allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('15_btn_vs_bb')">BTN vs BB allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('15_btn_vs_sb')">BTN vs SB allin</button>
                 </div>
-                <div class="image-container">
-                    <img id="15_btn_rfi" src="15BB/BTN/btn_rfi.png" class="hidden-chart">
-                    <img id="15_btn_vs_bb_allin" src="15BB/BTN/btn_vs_bb_allin.png" class="hidden-chart">
-                    <img id="15_btn_vs_sb_allin" src="15BB/BTN/btn_vs_sb_allin.png" class="hidden-chart">
-                </div>
+                <img id="15_btn_rfi" src="15bb/btn/btn_rfi.png" class="hidden-chart">
+                <img id="15_btn_vs_bb" src="15bb/btn/btn_vs_bb_allin.png" class="hidden-chart">
+                <img id="15_btn_vs_sb" src="15bb/btn/btn_vs_sb_allin.png" class="hidden-chart">
 
                 <h2>SB</h2>
                 <div class="button-group">
-                    <button class="chart-trigger" onclick="toggleImage('15_sb_rfi')">sb: sb rfi</button>
-                    <button class="chart-trigger" onclick="toggleImage('15_sb_vs_btn_2x')">sb vs btn 2x</button>
-                    <button class="chart-trigger" onclick="toggleImage('15_sb_vs_btn_allin')">sb vs btn allin</button>
-                    <button class="chart-trigger" onclick="toggleImage('15_sb_25_vs_bb_allin')">sb 2.5x vs bb allin</button>
-                    <button class="chart-trigger" onclick="toggleImage('15_sb_limp_vs_bb_3x')">sb limp vs bb 3x iso</button>
-                    <button class="chart-trigger" onclick="toggleImage('15_sb_limp_vs_bb_allin')">sb limp vs bb allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('15_sb_rfi')">SB rfi</button>
+                    <button class="chart-trigger" onclick="toggleImage('15_sb_vs_bu_2x')">SB vs BU 2x</button>
+                    <button class="chart-trigger" onclick="toggleImage('15_sb_vs_bu_allin')">SB vs BU allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('15_sb_25_vs_bb')">SB 2.5x vs BB allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('15_sb_limp_3x')">SB limp vs BB 3x</button>
+                    <button class="chart-trigger" onclick="toggleImage('15_sb_limp_allin')">SB limp vs BB allin</button>
                 </div>
-                <div class="image-container">
-                    <img id="15_sb_rfi" src="15BB/SB/sb_rfi.png" class="hidden-chart">
-                    <img id="15_sb_vs_btn_2x" src="15BB/SB/sb_vs_bu_2x.png" class="hidden-chart">
-                    <img id="15_sb_vs_btn_allin" src="15BB/SB/sb_vs_bu_allin.png" class="hidden-chart">
-                    <img id="15_sb_25_vs_bb_allin" src="15BB/SB/sb_2.5x_vs_bb_allin.png" class="hidden-chart">
-                    <img id="15_sb_limp_vs_bb_3x" src="15BB/SB/sb_limp_vs_bb_3x_iso.png" class="hidden-chart">
-                    <img id="15_sb_limp_vs_bb_allin" src="15BB/SB/sb_limp_vs_bb_allin.png" class="hidden-chart">
-                </div>
+                <img id="15_sb_rfi" src="15bb/sb/sb_rfi.png" class="hidden-chart">
+                <img id="15_sb_vs_bu_2x" src="15bb/sb/sb_vs_bu_2x.png" class="hidden-chart">
+                <img id="15_sb_vs_bu_allin" src="15bb/sb/sb_vs_bu_allin.png" class="hidden-chart">
+                <img id="15_sb_25_vs_bb" src="15bb/sb/sb_2.5x_vs_bb_allin.png" class="hidden-chart">
+                <img id="15_sb_limp_3x" src="15bb/sb/sb_limp_vs_bb_3x_iso.png" class="hidden-chart">
+                <img id="15_sb_limp_allin" src="15bb/sb/sb_limp_vs_bb_allin.png" class="hidden-chart">
 
                 <h2>BB</h2>
                 <div class="button-group">
-                    <button class="chart-trigger" onclick="toggleImage('15_bb_vs_btn_2x')">bb: bb vs btn 2x</button>
-                    <button class="chart-trigger" onclick="toggleImage('15_bb_vs_btn_allin')">bb vs btn allin</button>
-                    <button class="chart-trigger" onclick="toggleImage('15_bb_vs_sb_limp')">bb vs sb limp</button>
-                    <button class="chart-trigger" onclick="toggleImage('15_bb_vs_sb_25')">bb vs sb 2.5x</button>
-                    <button class="chart-trigger" onclick="toggleImage('15_bb_vs_sb_allin')">bb vs sb allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('15_bb_btn_2x')">BB vs BTN 2x</button>
+                    <button class="chart-trigger" onclick="toggleImage('15_bb_btn_allin')">BB vs BTN allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('15_bb_sb_limp')">BB vs SB limp</button>
+                    <button class="chart-trigger" onclick="toggleImage('15_bb_sb_25')">BB vs SB 2.5x</button>
+                    <button class="chart-trigger" onclick="toggleImage('15_bb_sb_allin')">BB vs SB allin</button>
                 </div>
-                <div class="image-container">
-                    <img id="15_bb_vs_btn_2x" src="15BB/BB/bb_vs_btn_2x.png" class="hidden-chart">
-                    <img id="15_bb_vs_btn_allin" src="15BB/BB/bb_vs_btn_allin.png" class="hidden-chart">
-                    <img id="15_bb_vs_sb_limp" src="15BB/BB/bb_vs_sb_limp.png" class="hidden-chart">
-                    <img id="15_bb_vs_sb_25" src="15BB/BB/bb_vs_sb_2.5x.png" class="hidden-chart">
-                    <img id="15_bb_vs_sb_allin" src="15BB/BB/bb_vs_sb_allin.png" class="hidden-chart">
-                </div>
+                <img id="15_bb_btn_2x" src="15bb/bb/bb_vs_btn_2x.png" class="hidden-chart">
+                <img id="15_bb_btn_allin" src="15bb/bb/bb_vs_btn_allin.png" class="hidden-chart">
+                <img id="15_bb_sb_limp" src="15bb/bb/bb_vs_sb_limp.png" class="hidden-chart">
+                <img id="15_bb_sb_25" src="15bb/bb/bb_vs_sb_2.5x.png" class="hidden-chart">
+                <img id="15_bb_sb_allin" src="15bb/bb/bb_vs_sb_allin.png" class="hidden-chart">
             </div>
 
             <div class="stack-column">
@@ -172,46 +83,40 @@
                 <h2>BTN</h2>
                 <div class="button-group">
                     <button class="chart-trigger" onclick="toggleImage('12_btn_rfi')">BTN rfi</button>
-                    <button class="chart-trigger" onclick="toggleImage('12_btn_vs_bb_allin')">BTN vs BB allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('12_btn_vs_bb')">BTN vs BB allin</button>
                 </div>
-                <div class="image-container">
-                    <img id="12_btn_rfi" src="12BB/BTN/btn_rfi.png" class="hidden-chart">
-                    <img id="12_btn_vs_bb_allin" src="12BB/BTN/btn_vs_bb_allin.png" class="hidden-chart">
-                </div>
+                <img id="12_btn_rfi" src="12bb/btn/btn_rfi.png" class="hidden-chart">
+                <img id="12_btn_vs_bb" src="12bb/btn/btn_vs_bb_allin.png" class="hidden-chart">
 
                 <h2>SB</h2>
                 <div class="button-group">
-                    <button class="chart-trigger" onclick="toggleImage('12_sb_rfi')">sb: sb rfi</button>
-                    <button class="chart-trigger" onclick="toggleImage('12_sb_vs_btn_2x')">sb vs btn 2x</button>
-                    <button class="chart-trigger" onclick="toggleImage('12_sb_vs_btn_allin')">sb vs btn allin</button>
-                    <button class="chart-trigger" onclick="toggleImage('12_sb_25_vs_bb_allin')">sb 2.5x vs bb allin</button>
-                    <button class="chart-trigger" onclick="toggleImage('12_sb_limp_vs_bb_3x')">sb limp vs bb 3x iso</button>
-                    <button class="chart-trigger" onclick="toggleImage('12_sb_limp_vs_bb_allin')">sb limp vs bb allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('12_sb_rfi')">SB rfi</button>
+                    <button class="chart-trigger" onclick="toggleImage('12_sb_vs_bu_2x')">SB vs BU 2x</button>
+                    <button class="chart-trigger" onclick="toggleImage('12_sb_vs_bu_allin')">SB vs BU allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('12_sb_25_vs_bb')">SB 2.5x vs BB allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('12_sb_limp_3x')">SB limp vs BB 3x</button>
+                    <button class="chart-trigger" onclick="toggleImage('12_sb_limp_allin')">SB limp vs BB allin</button>
                 </div>
-                <div class="image-container">
-                    <img id="12_sb_rfi" src="12BB/SB/sb_rfi.png" class="hidden-chart">
-                    <img id="12_sb_vs_btn_2x" src="12BB/SB/sb_vs_bu_2x.png" class="hidden-chart">
-                    <img id="12_sb_vs_btn_allin" src="12BB/SB/sb_vs_bu_allin.png" class="hidden-chart">
-                    <img id="12_sb_25_vs_bb_allin" src="12BB/SB/sb_2.5x_vs_bb_allin.png" class="hidden-chart">
-                    <img id="12_sb_limp_vs_bb_3x" src="12BB/SB/sb_limp_vs_bb_3x_iso.png" class="hidden-chart">
-                    <img id="12_sb_limp_vs_bb_allin" src="12BB/SB/sb_limp_vs_bb_allin.png" class="hidden-chart">
-                </div>
+                <img id="12_sb_rfi" src="12bb/sb/sb_rfi.png" class="hidden-chart">
+                <img id="12_sb_vs_bu_2x" src="12bb/sb/sb_vs_bu_2x.png" class="hidden-chart">
+                <img id="12_sb_vs_bu_allin" src="12bb/sb/sb_vs_bu_allin.png" class="hidden-chart">
+                <img id="12_sb_25_vs_bb" src="12bb/sb/sb_2.5x_vs_bb_allin.png" class="hidden-chart">
+                <img id="12_sb_limp_3x" src="12bb/sb/sb_limp_vs_bb_3x_iso.png" class="hidden-chart">
+                <img id="12_sb_limp_allin" src="12bb/sb/sb_limp_vs_bb_allin.png" class="hidden-chart">
 
                 <h2>BB</h2>
                 <div class="button-group">
-                    <button class="chart-trigger" onclick="toggleImage('12_bb_vs_btn_2x')">bb: bb vs btn 2x</button>
-                    <button class="chart-trigger" onclick="toggleImage('12_bb_vs_btn_allin')">bb vs btn allin</button>
-                    <button class="chart-trigger" onclick="toggleImage('12_bb_vs_sb_limp')">bb vs sb limp</button>
-                    <button class="chart-trigger" onclick="toggleImage('12_bb_vs_sb_2')">bb vs sb 2x</button>
-                    <button class="chart-trigger" onclick="toggleImage('12_bb_vs_sb_allin')">bb vs sb allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('12_bb_btn_2x')">BB vs BTN 2x</button>
+                    <button class="chart-trigger" onclick="toggleImage('12_bb_btn_allin')">BB vs BTN allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('12_bb_sb_limp')">BB vs SB limp</button>
+                    <button class="chart-trigger" onclick="toggleImage('12_bb_sb_2')">BB vs SB 2x</button>
+                    <button class="chart-trigger" onclick="toggleImage('12_bb_sb_allin')">BB vs SB allin</button>
                 </div>
-                <div class="image-container">
-                    <img id="12_bb_vs_btn_2x" src="12BB/BB/bb_vs_btn_2x.png" class="hidden-chart">
-                    <img id="12_bb_vs_btn_allin" src="12BB/BB/bb_vs_btn_allin.png" class="hidden-chart">
-                    <img id="12_bb_vs_sb_limp" src="12BB/BB/bb_vs_sb_limp.png" class="hidden-chart">
-                    <img id="12_bb_vs_sb_2" src="12BB/BB/bb_vs_sb_2x.png" class="hidden-chart">
-                    <img id="12_bb_vs_sb_allin" src="12BB/BB/bb_vs_sb_allin.png" class="hidden-chart">
-                </div>
+                <img id="12_bb_btn_2x" src="12bb/bb/bb_vs_btn_2x.png" class="hidden-chart">
+                <img id="12_bb_btn_allin" src="12bb/bb/bb_vs_btn_allin.png" class="hidden-chart">
+                <img id="12_bb_sb_limp" src="12bb/bb/bb_vs_sb_limp.png" class="hidden-chart">
+                <img id="12_bb_sb_2" src="12bb/bb/bb_vs_sb_2x.png" class="hidden-chart">
+                <img id="12_bb_sb_allin" src="12bb/bb/bb_vs_sb_allin.png" class="hidden-chart">
             </div>
 
             <div class="stack-column">
@@ -219,63 +124,86 @@
                 <h2>BTN</h2>
                 <div class="button-group">
                     <button class="chart-trigger" onclick="toggleImage('10_btn_rfi')">BTN rfi</button>
-                    <button class="chart-trigger" onclick="toggleImage('10_btn_vs_bb_allin')">BTN vs BB allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('10_btn_vs_bb')">BTN vs BB allin</button>
                 </div>
-                <div class="image-container">
-                    <img id="10_btn_rfi" src="10BB/BTN/btn_rfi.png" class="hidden-chart">
-                    <img id="10_btn_vs_bb_allin" src="10BB/BTN/btn_vs_bb_allin.png" class="hidden-chart">
-                </div>
+                <img id="10_btn_rfi" src="10bb/btn/btn_rfi.png" class="hidden-chart">
+                <img id="10_btn_vs_bb" src="10bb/btn/btn_vs_bb_allin.png" class="hidden-chart">
 
                 <h2>SB</h2>
                 <div class="button-group">
-                    <button class="chart-trigger" onclick="toggleImage('10_sb_rfi')">sb: sb rfi</button>
-                    <button class="chart-trigger" onclick="toggleImage('10_sb_vs_btn_2x')">sb vs btn 2x</button>
-                    <button class="chart-trigger" onclick="toggleImage('10_sb_vs_btn_allin')">sb vs btn allin</button>
-                    <button class="chart-trigger" onclick="toggleImage('10_sb_2_vs_bb_allin')">sb 2x vs bb allin</button>
-                    <button class="chart-trigger" onclick="toggleImage('10_sb_limp_vs_bb_3x')">sb limp vs bb 3x iso</button>
-                    <button class="chart-trigger" onclick="toggleImage('10_sb_limp_vs_bb_allin')">sb limp vs bb allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('10_sb_rfi')">SB rfi</button>
+                    <button class="chart-trigger" onclick="toggleImage('10_sb_vs_bu_2x')">SB vs BU 2x</button>
+                    <button class="chart-trigger" onclick="toggleImage('10_sb_vs_bu_allin')">SB vs BU allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('10_sb_2_vs_bb')">SB 2x vs BB allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('10_sb_limp_3x')">SB limp vs BB 3x</button>
+                    <button class="chart-trigger" onclick="toggleImage('10_sb_limp_allin')">SB limp vs BB allin</button>
                 </div>
-                <div class="image-container">
-                    <img id="10_sb_rfi" src="10BB/SB/sb_rfi.png" class="hidden-chart">
-                    <img id="10_sb_vs_btn_2x" src="10BB/SB/sb_vs_bu_2x.png" class="hidden-chart">
-                    <img id="10_sb_vs_btn_allin" src="10BB/SB/sb_vs_bu_allin.png" class="hidden-chart">
-                    <img id="10_sb_2_vs_bb_allin" src="10BB/SB/sb_2x_vs_bb_allin.png" class="hidden-chart">
-                    <img id="10_sb_limp_vs_bb_3x" src="10BB/SB/sb_limp_vs_bb_3x_iso.png" class="hidden-chart">
-                    <img id="10_sb_limp_vs_bb_allin" src="10BB/SB/sb_limp_vs_bb_allin.png" class="hidden-chart">
-                </div>
+                <img id="10_sb_rfi" src="10bb/sb/sb_rfi.png" class="hidden-chart">
+                <img id="10_sb_vs_bu_2x" src="10bb/sb/sb_vs_bu_2x.png" class="hidden-chart">
+                <img id="10_sb_vs_bu_allin" src="10bb/sb/sb_vs_bu_allin.png" class="hidden-chart">
+                <img id="10_sb_2_vs_bb" src="10bb/sb/sb_2x_vs_bb_allin.png" class="hidden-chart">
+                <img id="10_sb_limp_3x" src="10bb/sb/sb_limp_vs_bb_3x_iso.png" class="hidden-chart">
+                <img id="10_sb_limp_allin" src="10bb/sb/sb_limp_vs_bb_allin.png" class="hidden-chart">
 
                 <h2>BB</h2>
                 <div class="button-group">
-                    <button class="chart-trigger" onclick="toggleImage('10_bb_vs_btn_2x')">bb: bb vs btn 2x</button>
-                    <button class="chart-trigger" onclick="toggleImage('10_bb_vs_btn_allin')">bb vs btn allin</button>
-                    <button class="chart-trigger" onclick="toggleImage('10_bb_vs_sb_limp')">bb vs sb limp</button>
-                    <button class="chart-trigger" onclick="toggleImage('10_bb_vs_sb_2')">bb vs sb 2x</button>
-                    <button class="chart-trigger" onclick="toggleImage('10_bb_vs_sb_allin')">bb vs sb allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('10_bb_btn_2x')">BB vs BTN 2x</button>
+                    <button class="chart-trigger" onclick="toggleImage('10_bb_btn_allin')">BB vs BTN allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('10_bb_sb_limp')">BB vs SB limp</button>
+                    <button class="chart-trigger" onclick="toggleImage('10_bb_sb_2')">BB vs SB 2x</button>
+                    <button class="chart-trigger" onclick="toggleImage('10_bb_sb_allin')">BB vs SB allin</button>
                 </div>
-                <div class="image-container">
-                    <img id="10_bb_vs_btn_2x" src="10BB/BB/bb_vs_btn_2x.png" class="hidden-chart">
-                    <img id="10_bb_vs_btn_allin" src="10BB/BB/bb_vs_btn_allin.png" class="hidden-chart">
-                    <img id="10_bb_vs_sb_limp" src="10BB/BB/bb_vs_sb_limp.png" class="hidden-chart">
-                    <img id="10_bb_vs_sb_2" src="10BB/BB/bb_vs_sb_2x.png" class="hidden-chart">
-                    <img id="10_bb_vs_sb_allin" src="10BB/BB/bb_vs_sb_allin.png" class="hidden-chart">
+                <img id="10_bb_btn_2x" src="10bb/bb/bb_vs_btn_2x.png" class="hidden-chart">
+                <img id="10_bb_btn_allin" src="10bb/bb/bb_vs_btn_allin.png" class="hidden-chart">
+                <img id="10_bb_sb_limp" src="10bb/bb/bb_vs_sb_limp.png" class="hidden-chart">
+                <img id="10_bb_sb_2" src="10bb/bb/bb_vs_sb_2x.png" class="hidden-chart">
+                <img id="10_bb_sb_allin" src="10bb/bb/bb_vs_sb_allin.png" class="hidden-chart">
+            </div>
+
+            <div class="stack-column">
+                <h1>8BB</h1>
+                <h2>BTN</h2>
+                <div class="button-group">
+                    <button class="chart-trigger" onclick="toggleImage('8_btn_rfi')">BTN rfi</button>
                 </div>
+                <img id="8_btn_rfi" src="8bb/btn/btn_rfi.png" class="hidden-chart">
+
+                <h2>SB</h2>
+                <div class="button-group">
+                    <button class="chart-trigger" onclick="toggleImage('8_sb_rfi')">SB rfi</button>
+                    <button class="chart-trigger" onclick="toggleImage('8_sb_2x_bb')">SB 2x vs BB allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('8_sb_limp_3x')">SB limp vs BB 3x</button>
+                    <button class="chart-trigger" onclick="toggleImage('8_sb_limp_allin')">SB limp vs BB allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('8_sb_bu_allin')">SB vs BU allin</button>
+                </div>
+                <img id="8_sb_rfi" src="8bb/sb/sb_rfi.png" class="hidden-chart">
+                <img id="8_sb_2x_bb" src="8bb/sb/sb_2x_vs_bb_allin.png" class="hidden-chart">
+                <img id="8_sb_limp_3x" src="8bb/sb/sb_limp_vs_bb_3x.png" class="hidden-chart">
+                <img id="8_sb_limp_allin" src="8bb/sb/sb_limp_vs_bb_allin.png" class="hidden-chart">
+                <img id="8_sb_bu_allin" src="8bb/sb/sb_vs_bu_allin.png" class="hidden-chart">
+
+                <h2>BB</h2>
+                <div class="button-group">
+                    <button class="chart-trigger" onclick="toggleImage('8_bb_btn_allin')">BB vs BTN allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('8_bb_sb_2x')">BB vs SB 2x</button>
+                    <button class="chart-trigger" onclick="toggleImage('8_bb_sb_allin')">BB vs SB allin</button>
+                    <button class="chart-trigger" onclick="toggleImage('8_bb_sb_limp')">BB vs SB limp</button>
+                </div>
+                <img id="8_bb_btn_allin" src="8bb/bb/bb_vs_btn_allin.png" class="hidden-chart">
+                <img id="8_bb_sb_2x" src="8bb/bb/bb_vs_sb_2x.png" class="hidden-chart">
+                <img id="8_bb_sb_allin" src="8bb/bb/bb_vs_sb_allin.png" class="hidden-chart">
+                <img id="8_bb_sb_limp" src="8bb/bb/bb_vs_sb_limp.png" class="hidden-chart">
             </div>
         </div>
     </div>
 
     <script>
         function checkPassword() {
-            const input = document.getElementById('pw-input').value;
-            if (input === 'spinsux') {
+            if (document.getElementById('pw-input').value === 'spinsux') {
                 document.getElementById('password-overlay').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
             } else { alert('Wrong password'); }
         }
-
-        document.getElementById('pw-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') checkPassword();
-        });
-
         function toggleImage(id) {
             const chart = document.getElementById(id);
             if (!chart) return;
